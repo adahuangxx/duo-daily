@@ -1,7 +1,11 @@
+import { isSupabaseEnabled } from '../lib/supabaseClient'
 import type { StorageAdapter } from './types'
 import { localStorageAdapter } from './localStorage'
+import { supabaseAdapter } from './supabase'
 
-/**
- * Active storage backend. Swap to supabaseAdapter when cloud sync is ready.
- */
-export const storage: StorageAdapter = localStorageAdapter
+/** Uses Supabase when VITE_SUPABASE_* env vars are set; otherwise localStorage. */
+export const storage: StorageAdapter = isSupabaseEnabled()
+  ? supabaseAdapter
+  : localStorageAdapter
+
+export { isSupabaseEnabled }

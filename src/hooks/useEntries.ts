@@ -1,19 +1,47 @@
 import { useCallback, useEffect, useState } from 'react'
 import type { DayEntry } from '../types/entry'
-import { storage } from '../storage'
+import { supabase, formatSupabaseError } from '../lib/supabaseClient'
+import { storage, isSupabaseEnabled } from '../storage'
 
 export function useEntries() {
   const [entries, setEntries] = useState<DayEntry[]>([])
   const [loading, setLoading] = useState(true)
+  const [error, setError] = useState<string | null>(null)
 
   const refresh = useCallback(async () => {
-    const data = await storage.getEntries()
-    setEntries(data)
-    setLoading(false)
+    try {
+      setError(null)
+      const data = await storage.getEntries()
+      setEntries(data)
+    } catch (err) {
+      setError(formatSupabaseError(err))
+    } finally {
+      setLoading(false)
+    }
   }, [])
 
   useEffect(() => {
     refresh()
+  }, [refresh])
+
+  useEffect(() => {
+    if (!isSupabaseEnabled() || !supabase) return
+
+    const client = supabase
+    const channel = client
+      .channel('day_entries_changes')
+      .on(
+        'postgres_changes',
+        { event: '*', schema: 'public', table: 'day_entries' },
+        () => {
+          refresh()
+        },
+      )
+      .subscribe()
+
+    return () => {
+      client.removeChannel(channel)
+    }
   }, [refresh])
 
   const upsertEntry = useCallback(
@@ -43,6 +71,8 @@ export function useEntries() {
   return {
     entries,
     loading,
+    error,
+    cloudSync: isSupabaseEnabled(),
     refresh,
     upsertEntry,
     deleteEntry,

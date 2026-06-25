@@ -3,22 +3,17 @@ import { getStickerColor } from '../../constants/colors'
 
 interface StickerProps {
   entry: DayEntry
-  size?: number
   onClick?: () => void
 }
 
-export function Sticker({ entry, size = 10, onClick }: StickerProps) {
+export function Sticker({ entry, onClick }: StickerProps) {
   const color = getStickerColor(entry.userId, entry.type)
 
   return (
     <button
       type="button"
       className="sticker"
-      style={{
-        width: size,
-        height: size,
-        backgroundColor: color,
-      }}
+      style={{ backgroundColor: color }}
       title={`${entry.userId === 'ada' ? 'Ada' : 'Ya'} · ${entry.type}`}
       onClick={(e) => {
         e.stopPropagation()

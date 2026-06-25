@@ -35,7 +35,6 @@ export function DayCell({
             <Sticker
               key={entry.id}
               entry={entry}
-              size={12}
               onClick={() => onStickerClick(entry)}
             />
           ))}

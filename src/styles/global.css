@@ -15,6 +15,7 @@
   --danger: #ef4444;
   --radius: 12px;
   --shadow: 0 4px 24px rgba(15, 23, 42, 0.08);
+  --sticker-size: clamp(26px, 6.5vmin, 36px);
   font-family: system-ui, -apple-system, 'Segoe UI', Roboto, 'PingFang SC',
     'Microsoft YaHei', sans-serif;
   line-height: 1.5;
@@ -63,6 +64,46 @@ button {
   margin: 0.25rem 0 0;
   color: var(--text-muted);
   font-size: 0.9rem;
+}
+
+.app__nav {
+  display: flex;
+  justify-content: center;
+  gap: 0.5rem;
+  margin-top: 0.75rem;
+}
+
+.app__nav-link {
+  padding: 0.35rem 0.85rem;
+  border-radius: 999px;
+  font-size: 0.85rem;
+  font-weight: 500;
+  color: var(--text-muted);
+  text-decoration: none;
+  border: 1px solid var(--border);
+  background: var(--surface);
+  transition: background 0.15s, color 0.15s, border-color 0.15s;
+}
+
+.app__nav-link:hover {
+  color: var(--primary);
+  border-color: #c7d2fe;
+  background: #eff6ff;
+}
+
+.app__sync {
+  color: #059669;
+  font-weight: 500;
+}
+
+.app__error {
+  margin: 0 0 0.75rem;
+  padding: 0.6rem 0.75rem;
+  background: #fef2f2;
+  border: 1px solid #fecaca;
+  border-radius: 8px;
+  color: #b91c1c;
+  font-size: 0.85rem;
 }
 
 .app__main {
@@ -155,16 +196,16 @@ button {
 
 .day-cell {
   aspect-ratio: 1;
-  min-height: 44px;
+  min-height: 56px;
   border: 1px solid var(--border);
   border-radius: 8px;
   background: var(--bg);
-  padding: 0.35rem;
+  padding: 0.3rem;
   display: flex;
   flex-direction: column;
-  align-items: center;
-  justify-content: flex-start;
-  gap: 0.2rem;
+  align-items: stretch;
+  justify-content: space-between;
+  gap: 0.15rem;
   transition: background 0.15s, border-color 0.15s;
 }
 
@@ -183,31 +224,43 @@ button {
 }
 
 .day-cell__number {
-  font-size: 0.8rem;
+  font-size: 0.75rem;
   font-weight: 600;
   line-height: 1;
+  align-self: flex-start;
+  padding-left: 0.1rem;
 }
 
 .day-cell__stickers {
   display: flex;
   flex-wrap: wrap;
-  gap: 3px;
+  gap: 5px;
   justify-content: center;
   align-items: center;
-  max-width: 100%;
+  align-content: center;
+  flex: 1;
+  min-height: var(--sticker-size);
+  padding-bottom: 0.15rem;
 }
 
 .sticker {
-  border: 2px solid rgba(255, 255, 255, 0.85);
+  width: var(--sticker-size);
+  height: var(--sticker-size);
+  border: 3px solid rgba(255, 255, 255, 0.92);
   border-radius: 50%;
   padding: 0;
   flex-shrink: 0;
-  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.15);
-  transition: transform 0.1s;
+  box-shadow:
+    0 2px 5px rgba(15, 23, 42, 0.22),
+    0 1px 0 rgba(255, 255, 255, 0.45) inset;
+  transition: transform 0.12s ease, box-shadow 0.12s ease;
 }
 
 .sticker:hover {
-  transform: scale(1.15);
+  transform: scale(1.08);
+  box-shadow:
+    0 4px 10px rgba(15, 23, 42, 0.28),
+    0 1px 0 rgba(255, 255, 255, 0.45) inset;
 }
 
 /* Legend */
@@ -518,8 +571,153 @@ button {
   line-height: 1;
 }
 
+/* Files */
+.files-empty {
+  text-align: center;
+  color: var(--text-muted);
+  padding: 1.5rem 0.5rem;
+}
+
+.files-empty__hint {
+  font-size: 0.85rem;
+  margin-top: 0.5rem;
+}
+
+.files-empty code,
+.files-footer code,
+.file-view__url {
+  font-size: 0.8rem;
+}
+
+.files-list {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
+.files-list__item {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  padding: 0.5rem;
+  background: var(--bg);
+}
+
+.files-list__link {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  flex: 1;
+  text-decoration: none;
+  color: var(--text);
+  min-width: 0;
+}
+
+.files-list__link:hover .files-list__name {
+  color: var(--primary);
+}
+
+.files-list__thumb {
+  width: 48px;
+  height: 48px;
+  object-fit: cover;
+  border-radius: 8px;
+  flex-shrink: 0;
+  background: var(--surface);
+}
+
+.files-list__icon {
+  width: 48px;
+  height: 48px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 1.5rem;
+  background: var(--surface);
+  border-radius: 8px;
+  flex-shrink: 0;
+}
+
+.files-list__name {
+  font-size: 0.9rem;
+  font-weight: 500;
+  word-break: break-all;
+}
+
+.files-list__raw {
+  font-size: 0.75rem;
+  color: var(--text-muted);
+  text-decoration: none;
+  padding: 0.25rem 0.5rem;
+  border-radius: 6px;
+  flex-shrink: 0;
+}
+
+.files-list__raw:hover {
+  color: var(--primary);
+  background: #eff6ff;
+}
+
+.files-footer {
+  margin-top: 1rem;
+  font-size: 0.8rem;
+  color: var(--text-muted);
+}
+
+.file-view {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+}
+
+.file-view__image {
+  max-width: 100%;
+  height: auto;
+  border-radius: var(--radius);
+  border: 1px solid var(--border);
+  background: var(--bg);
+}
+
+.file-view__download {
+  text-align: center;
+  padding: 2rem 1rem;
+  background: var(--bg);
+  border-radius: var(--radius);
+  border: 1px solid var(--border);
+}
+
+.file-view__actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+}
+
+.file-view__url {
+  color: var(--text-muted);
+  word-break: break-all;
+}
+
+.file-view__url a {
+  color: var(--primary);
+}
+
+.files-back {
+  display: inline-block;
+  margin-top: 0.5rem;
+  text-decoration: none;
+}
+
 /* Responsive */
 @media (max-width: 380px) {
+  :root {
+    --sticker-size: 24px;
+  }
+
   .app {
     padding: 0.5rem 0.5rem 1.5rem;
   }
@@ -529,16 +727,20 @@ button {
   }
 
   .day-cell {
-    min-height: 40px;
+    min-height: 48px;
     padding: 0.2rem;
   }
 
   .day-cell__number {
-    font-size: 0.7rem;
+    font-size: 0.65rem;
   }
 }
 
 @media (min-width: 600px) {
+  :root {
+    --sticker-size: 34px;
+  }
+
   .app {
     padding: 2rem 1.5rem;
   }
@@ -548,6 +750,6 @@ button {
   }
 
   .day-cell {
-    min-height: 56px;
+    min-height: 72px;
   }
 }
